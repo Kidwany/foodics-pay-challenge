@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('archived_transactions', function (Blueprint $table) {
             $table->id();
             $table->uuid('transaction_id')->unique();
             $table->char('transaction_code')->unique()->nullable();
@@ -26,7 +26,9 @@ return new class extends Migration
             $table->enum('type', ['credit', 'debit'])->index();
             $table->date('transaction_date')->index('idx_transactions_date');
             $table->json('transaction_object')->nullable();
+            $table->timestamp('archived_at')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -35,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('archived_transactions');
     }
 };
