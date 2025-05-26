@@ -16,7 +16,7 @@ class PaymentProvidersSeeder extends Seeder
         DB::table('payment_providers')->updateOrInsert(
             ['code' => 'foodics'],
             [
-                'name' => 'Foodics Bank',
+                'name' => 'FoodicsProvider Bank',
                 'priority' => 1,
                 'supports_incoming' => true,
                 'supports_outgoing' => true,
