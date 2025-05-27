@@ -9,7 +9,7 @@ class PaymentProviderFactory
     {
         return match ($provider) {
             'foodics' => app(\App\Modules\PaymentProviders\FoodicsProvider\Services\PaymentService::class),
-            'acme' => app(\App\Modules\PaymentProviders\Acme\Services\PaymentService::class),
+            'acme' => app(\App\Modules\PaymentProviders\AcmeProvider\Services\PaymentService::class),
             default => throw new \Exception("Invalid Provider $provider")
         };
     }
