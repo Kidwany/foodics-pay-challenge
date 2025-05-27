@@ -28,5 +28,21 @@ class PaymentProvidersSeeder extends Seeder
                 'updated_at' => now(),
             ]
         );
+
+        DB::table('payment_providers')->updateOrInsert(
+            ['code' => 'acme'],
+            [
+                'name' => 'Acme Bank',
+                'priority' => 2,
+                'supports_incoming' => true,
+                'supports_outgoing' => false,
+                'is_active' => true,
+                'config' => json_encode([
+                    'currency' => 'SAR',
+                ]),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
     }
 }
