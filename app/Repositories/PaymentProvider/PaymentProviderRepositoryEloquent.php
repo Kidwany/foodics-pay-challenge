@@ -33,4 +33,8 @@ class PaymentProviderRepositoryEloquent extends BaseRepository implements Paymen
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    public function getProviderByCode(string $code)
+    {
+        return $this->model->query()->where('code', $code)->select('id', 'code')->first();
+    }
 }

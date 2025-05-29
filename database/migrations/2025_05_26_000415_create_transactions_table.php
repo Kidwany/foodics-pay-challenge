@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('balance_before', 15, 2);
             $table->decimal('balance_after', 15, 2);
             $table->string('currency')->default('SAR');
+            $table->json('notes')->nullable();
             $table->enum('type', ['credit', 'debit'])->index();
             $table->date('transaction_date')->index('idx_transactions_date');
             $table->json('transaction_object')->nullable();

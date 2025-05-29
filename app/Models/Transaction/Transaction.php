@@ -23,10 +23,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 */
 class Transaction extends BaseModel
 {
-    use SoftDeletes;
-
     /**
      * @var string
      */
     protected $table = 'transactions';
+
+    protected $guarded = ['id'];
 }

@@ -32,4 +32,9 @@ class Client extends BaseModel
      * @var string
      */
     protected $keyType = 'string';
+
+    /**
+     * @var string[]
+     */
+    protected $guarded = ['id'];
 }

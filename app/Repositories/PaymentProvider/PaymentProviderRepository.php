@@ -11,5 +11,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface PaymentProviderRepository extends RepositoryInterface
 {
-    //
+    public function getProviderByCode(string $code);
 }
