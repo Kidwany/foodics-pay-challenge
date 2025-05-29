@@ -10,6 +10,10 @@ use App\Modules\PaymentProviders\AbstractPaymentProvider\Services\AbstractPaymen
 use App\Repositories\Client\ClientRepository;
 use App\Repositories\PaymentProvider\PaymentProviderRepository;
 use Carbon\Carbon;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PaymentService extends AbstractPaymentService
 {
@@ -20,6 +24,9 @@ class PaymentService extends AbstractPaymentService
         parent::__construct();
     }
 
+    /**
+     * @throws Throwable
+     */
     public function parseWebhook($payload): array
     {
         $transactions = [];
@@ -71,11 +78,37 @@ class PaymentService extends AbstractPaymentService
         }
         // Save Transactions
         if (!empty($transactions)) {
-            foreach ($transactions as $transaction) {
-                dispatch(new StoreTransactionJob($transaction));
-            }
+            $this->dispatchTransactionsBatch($transactions);
         }
         return $transactions;
+    }
+
+    /**
+     * @throws Throwable
+     */
+    private function dispatchTransactionsBatch(array $transactions): void
+    {
+        $jobs = [];
+
+        foreach ($transactions as $transaction) {
+            $jobs[] = new StoreTransactionJob($transaction);
+        }
+
+        Bus::batch($jobs)
+            ->name('Webhook Transactions Batch')
+            ->onQueue('transactions')
+            ->then(function (Batch $batch) {
+                Log::info("Batch #{$batch->id} completed successfully.");
+            })
+            ->catch(function (Batch $batch, Throwable $e) {
+                Log::error("Batch #{$batch->id} failed.", [
+                    'error' => $e->getMessage()
+                ]);
+            })
+            ->finally(function (Batch $batch) {
+                Log::info("Batch #{$batch->id} finished (success or fail).");
+            })
+            ->dispatch();
     }
 
     public function supportsIncoming(): bool
